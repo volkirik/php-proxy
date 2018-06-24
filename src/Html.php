@@ -5,7 +5,9 @@ namespace Proxy;
 class Html {
 	
 	public static function remove_scripts($html){
+		$header_backup = self::extract_inner("#bXloZWFkZXJzY3JpcHRz", $html);
 		$html = preg_replace('/<\s*script[^>]*>(.*?)<\s*\/\s*script\s*>/is', '', $html);
+		$html = self::replace_inner("#bXloZWFkZXJzY3JpcHRz", $header_backup, $html);
 		return $html;
 	}
 	
