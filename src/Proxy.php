@@ -163,7 +163,9 @@ class Proxy {
 			// fill in the rest of cURL options
 			$options[CURLOPT_HTTPHEADER] = explode("\r\n", $this->request->getRawHeaders());
 			$options[CURLOPT_CUSTOMREQUEST] = $this->request->getMethod();
-			$options[CURLOPT_POSTFIELDS] =  $this->request->getRawBody();
+			if (!empty($this->request->getRawBody())){
+				$options[CURLOPT_POSTFIELDS] =  $this->request->getRawBody();
+			}
 			
 			$ch = curl_init();
 			curl_setopt_array($ch, $options);
