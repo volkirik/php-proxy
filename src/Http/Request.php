@@ -80,8 +80,6 @@ class Request {
 			$this->prepared_body = http_build_query($this->post->all());
 			$this->headers->set('content-type', 'application/x-www-form-urlencoded');
 			
-		} else if (empty($this->body)) {
-			$this->headers->remove('content-type');
 		} else {
 		
 			$this->headers->set('content-type', $this->detectContentType($this->body));
