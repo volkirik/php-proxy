@@ -19,6 +19,7 @@ class HeaderRewritePlugin extends AbstractPlugin {
 	function onHeadersReceived(ProxyEvent $event){
 
 		// so stupid... onCompleted won't be called on "streaming" responses
+		$request = $event['request'];
 		$response = $event['response'];
 		$request_url = $event['request']->getUri();
 		
@@ -35,9 +36,14 @@ class HeaderRewritePlugin extends AbstractPlugin {
 		$text = $response->getStatusText();
 
 		if($code >= 400 && $code <= 600){
-			throw new \Exception("Error accessing resource: {$code} - {$text}");
+			if (empty($_GET['debug'])){
+				throw new \Exception("Error accessing resource: {$code} - {$text}");
+			}
 		}
-		
+		if (!empty($_GET['debug']) && $_GET['debug']=="headers") {
+			echo '<pre>'; var_dump($request->getUri()); var_dump($response->headers->all()); var_dump($request->headers->all()); echo '</pre>'; exit; // for debug
+		}
+
 		// we need content-encoding (in case server refuses to serve it in plain text)
 		// content-length: final size of content sent to user may change via plugins, so it makes no sense to send old content-length
 		$forward_headers = array('content-type', 'zzzcontent-length', 'accept-ranges', 'content-range', 'content-disposition', 'location', 'set-cookie');
